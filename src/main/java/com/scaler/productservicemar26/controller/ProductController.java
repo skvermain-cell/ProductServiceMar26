@@ -29,7 +29,7 @@ public class ProductController {
     @GetMapping()
     public List<Product> getAllProducts() {
 
-        return new ArrayList<>();
+        return prodSvc.getAllProducts();
     }
 
     @PostMapping()
