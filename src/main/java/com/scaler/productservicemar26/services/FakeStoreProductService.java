@@ -1,6 +1,7 @@
 package com.scaler.productservicemar26.services;
 
 import com.scaler.productservicemar26.dtos.FakeStoreDto;
+import com.scaler.productservicemar26.exceptions.ProductNotFoundException;
 import com.scaler.productservicemar26.models.Category;
 import com.scaler.productservicemar26.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class FakeStoreProductService implements IProductService {
     }
 
     @Override
-    public Product getSingleProduct(Long productId) {
+    public Product getSingleProduct(Long productId) throws ProductNotFoundException {
 
         //make a http call to fake store API to get the product with a given Id
         ResponseEntity<FakeStoreDto> responseEntity = restTemplate.getForEntity(
@@ -52,9 +53,12 @@ public class FakeStoreProductService implements IProductService {
                 FakeStoreDto.class
         );
 
-        //FakeStoreDto fakeStoreDto = responseEntity.getBody();
+        FakeStoreDto fakeStoreDto = responseEntity.getBody();
+        if (fakeStoreDto == null) {
+            throw new ProductNotFoundException(productId);
+        }
 
-        Product product = convertFakeStoreProductDtoToProduct(responseEntity.getBody());
+        Product product = convertFakeStoreProductDtoToProduct(fakeStoreDto);
         return product;
     }
 
@@ -70,10 +74,6 @@ public class FakeStoreProductService implements IProductService {
 
     private Product convertFakeStoreProductDtoToProduct(FakeStoreDto fakeStoreDto) {
 
-        if (fakeStoreDto == null) {
-            return null;
-        }
-        
         Product product = new Product();
         product.setId(fakeStoreDto.getId());
         product.setTitle(fakeStoreDto.getTitle());
