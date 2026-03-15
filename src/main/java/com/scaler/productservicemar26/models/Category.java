@@ -1,11 +1,13 @@
 package com.scaler.productservicemar26.models;
 
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Entity
 public class Category extends BaseModel {
-    //private String id;
+
     private String title;
 }
